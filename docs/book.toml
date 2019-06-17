@@ -1,0 +1,5 @@
+[book]
+authors = ["medetcan"]
+multilingual = false
+src = "src"
+title = "Programming Languages By Dan Grossman"
