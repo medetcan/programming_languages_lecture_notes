@@ -6,24 +6,20 @@
 
 
 use "hw2provided.sml";
-
-fun contains(str, xs)=
-  case xs of
-       [] => false
-     | x::xs' => same_string(str, x) orelse contains(str, xs');
-
-fun append(fullname : {first:string, middle:string, last:string}, xs : string list)=
-    case xs of
-        [] => []
-       | x::xs' => 
-        case fullname of 
-              {first=_, middle=y, last=z} => ({first = x, middle = y, last = z})::append(fullname, xs');
+use "get_substitutions2.sml";
 
 fun similar_names(xs : (string list) list, fullname : {first:string, middle:string, last:string})=
-  case xs of 
-       [] => []
-     | xs'::xs'' => 
-         case fullname of
-              {first=fname, middle=_, last=_} => if contains(fname, xs') then append(fullname, xs') @ similar_names(xs'', fullname) else similar_names(xs'', fullname);
-         
-similar_names([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]],{first="Fred", middle="W", last="Smith"});
+  case fullname of {first=fname, middle=_, last=_} => 
+    let 
+      fun append(fullname : {first:string, middle:string, last:string}, xs : string list)= 
+        case xs of 
+             [] => [] 
+           | x::xs' => case fullname of {first=_, middle=y, last=z} => ({first = x, middle = y, last = z})::append(fullname, xs')
+    in 
+      append(fullname, fname::get_substitutions2(xs, fname))
+    end;
+similar_names ([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], {first="Fred", middle="W", last="Smith"});
+val test4 = similar_names ([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], {first="Fred", middle="W", last="Smith"}) =
+	    [{first="Fred", last="Smith", middle="W"}, {first="Freddie", last="Smith", middle="W"},
+	     {first="F", last="Smith", middle="W"}, {first="Fredrick", last="Smith", middle="W"}]
+
