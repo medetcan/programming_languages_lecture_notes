@@ -33,4 +33,5 @@ fun score(cardList : (card list), goal : int)=
   end;
 
 score([(Spades, Num 2)], 5);
+score([], 5);
 val test10 = score ([(Hearts, Num 2),(Clubs, Num 4)],10) = 4

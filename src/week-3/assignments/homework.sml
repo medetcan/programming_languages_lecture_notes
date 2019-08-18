@@ -87,7 +87,7 @@ fun remove_card(cs: card list, c : card, except : exn)=
 
 fun all_same_color(cardList : card list)=
   case cardList of 
-       [] => false 
+       [] => true 
      | c::cardList' => 
          let 
            val color = card_color(c) 

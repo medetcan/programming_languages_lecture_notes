@@ -8,7 +8,7 @@ use "card_color.sml";
 
 fun all_same_color(cardList : card list)=
   case cardList of 
-       [] => false 
+       [] => true 
      | c::cardList' => 
          let 
            val color = card_color(c) 
@@ -26,3 +26,4 @@ all_same_color [(Spades, Ace), (Spades, Num 2), (Hearts, Num 3), (Hearts, King)]
 all_same_color [(Diamonds, Ace), (Hearts, Num 3)];
 all_same_color [(Hearts, Ace), (Hearts, Num 3), (Spades, Num 4)];
 all_same_color [(Hearts, Ace), (Hearts, Num 3), (Hearts, Num 4)];
+all_same_color [];
