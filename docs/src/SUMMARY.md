@@ -11,3 +11,13 @@
 - [Some Other Expressions and Operators](./sources/some_other_expressions_and_operators.md)
 - [Lack of Mutation and Benefits Thereof](./sources/lack_of_mutation_and_benefits_thereof.md)
 - [The Pieces of a Programming Language](./sources/the_pieces_of_a_programming_language.md)
+- [Conceptual Ways to Build New Types](./sources/conceptual_ways_to_build_new_types.md)
+- [Records: Another Approach to "Each-of" Types](./sources/records_another_approach_to_each_of_types.md)
+- [By Name vs By Position, Syntactic Sugar and The Truth About Tuples](./sources/by_name_vs_by_position_syntactic_sugar_and_the_truth_about_tuples.md)
+- [Datatype Bindings: Our Own "One-of" Types](./sources/datatype_bindings_our_own_one_of_types.md)
+- [How ML Does Not Provide Access to Datatype Values](./sources/how_ml_does_not_provide_access_to_datatype_values.md)
+- [How ML Provides Access to Datatype Values: Case Expressions](./sources/how_ml_provides_access_to_datatype_values_case_expressions.md)
+- [Datatype Bindings and Case Expressions So Far, Precisely](./sources/datatype_bindings_and_case_expressions_so_far_precisely.md)
+
+
+
