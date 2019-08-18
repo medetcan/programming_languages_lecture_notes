@@ -18,8 +18,11 @@ fun similar_names(xs : (string list) list, fullname : {first:string, middle:stri
     in 
       append(fullname, fname::get_substitutions2(xs, fname))
     end;
-similar_names ([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], {first="Fred", middle="W", last="Smith"});
-val test4 = similar_names ([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], {first="Fred", middle="W", last="Smith"}) =
-	    [{first="Fred", last="Smith", middle="W"}, {first="Freddie", last="Smith", middle="W"},
-	     {first="F", last="Smith", middle="W"}, {first="Fredrick", last="Smith", middle="W"}]
 
+ similar_names ([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], {first="Fred", middle="W", last="Smith"});
+
+val test4 = similar_names ([["Fred","Fredrick"],["Elizabeth","Betty"],["Freddie","Fred","F"]], {first="Fred", middle="W", last="Smith"}) = [
+  {first="Fred", last="Smith", middle="W"}, 
+  {first="Fredrick", last="Smith", middle="W"},
+  {first="Freddie", last="Smith", middle="W"},
+  {first="F", last="Smith", middle="W"} ]

@@ -14,7 +14,7 @@ fun get_substitutions2(xs : (string list) list, str : string)=
          | xs'::xs'' =>
              case all_except_option(str, xs') of 
                   NONE => get_substitutions2(xs'', str, acc) 
-                | SOME lst => get_substitutions2(xs'', str, lst @ acc);
+                | SOME lst => get_substitutions2(xs'', str, acc @ lst);
   in
     get_substitutions2(xs, str, [])
   end;
