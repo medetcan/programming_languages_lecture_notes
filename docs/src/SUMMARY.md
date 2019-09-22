@@ -18,6 +18,8 @@
 - [How ML Does Not Provide Access to Datatype Values](./sources/how_ml_does_not_provide_access_to_datatype_values.md)
 - [How ML Provides Access to Datatype Values: Case Expressions](./sources/how_ml_provides_access_to_datatype_values_case_expressions.md)
 - [Datatype Bindings and Case Expressions So Far, Precisely](./sources/datatype_bindings_and_case_expressions_so_far_precisely.md)
-
-
+- [Taking Functions as Arguments](./sources/taking_functions_as_arguments.md)
+- [Polymorphic Types and Functions as Arguments](./sources/polymorphic_types_and_functions_as_arguments.md)
+- [Anonymous Functions](./sources/anonymous_functions.md)
+- [Lexical Scope](./sources/lexical_scope.md)
 
