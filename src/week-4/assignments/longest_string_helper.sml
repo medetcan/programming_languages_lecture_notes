@@ -1,4 +1,4 @@
-(* Write functions longest_string_helper,longest_string3, and longest_string4 such that 
+(* Write functions longest_string_helper, longest_string3, and longest_string4 such that 
  * longest_string3 has  the  same  behavior as longest_string1 and longest_string4 has the same behavior as longest_string2
  * longest_string_helper has type (int * int -> bool) -> string list -> string
  * if longest_string_helper is passed a function that behaves like >
