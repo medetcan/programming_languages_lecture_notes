@@ -22,4 +22,5 @@
 - [Polymorphic Types and Functions as Arguments](./sources/polymorphic_types_and_functions_as_arguments.md)
 - [Anonymous Functions](./sources/anonymous_functions.md)
 - [Lexical Scope](./sources/lexical_scope.md)
+- [Getting Started With Racket](./sources/getting_started_with_racket.md)
 
