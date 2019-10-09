@@ -55,3 +55,28 @@
     * `(append <expr-list> <expr-list>)`: Combines list together.
     * `(reverse <expr-list>)`: Reverses the ordering of the list.
     * `(member <expr> <expr-list>)`: Checks if the result of the `expr` is contained in the list.
+    * `(cons <expr> <expr> )`: Construct a list.
+    * `(car <expr-list>)`: Get first element of the list. Function `car` can operate on pairs.
+    * `(cdr <expr-lis>)`: Get tail of the list. Function `cdr` can operate on pairs.
+    * `(first <expr-list>)`: Same as `car`, get first element of the list. You can't use it on pairs.
+    * `(rest <expr-list>)`: Same as `tail`, get tail of the list. You can't use it on pairs.
+    * `(null? <expr-list>)`: Checks if the list is empty.
+    * `(list? <expr>)`: Checks if the result of the expression is a list.
+    * `(pair? <expr>)`: Checks if the result of the expression is a pair. Since lists derived from pairs returns `#t` for lists.
+* `null` is used for empty list.
+
+#### Lists and Racket Syntax
+
+* A value that prints like a quoted identifier is a symbol.
+* A printed symbol should not be confused with an identifier.
+* You can create a symbol by using `quote` function.
+* You can also abbreviate a use of `quote` by just putting `'` in front of a form to quote.
+* The syntax of Racket is not defined directly in terms of characters streams.
+    * A reader layer, which turns a sequence of characters into lists, symbols, and other constants.
+    * An expander layer, which processes the lists, symbols, and other constants to parse them as an expression.
+* The rules for printing and reading go together.
+    * For example, a list printed with parentheses, and reading a pair of parentheses produces a list.
+
+#### Conditionals
+
+
