@@ -56,17 +56,19 @@
 ;Assume n is non-negative.  
 ;Note:You can test your streams with this function instead of the graphics code.
 
-(define (stream-for-n-steps s n) (
-    (letrec 
-      ([f (lambda (n) (
-         if (< n 0) 
-            null
-            (cons (car (s)) (f s (- n 1)))
-            ))
-        ])
-        (f n)
-        ) 
+(define (stream-generator fn arg) (
+    letrec ([f (lambda (n) (cons n (lambda () (f (fn n arg)))))])    
+    (lambda () (f 1))
     )
 )
-(define (my-stream) (cons 1 my-stream))
-(stream-for-n-steps my-stream 5)
+
+(define (stream-for-n-steps s n) (
+    letrec ([res (s)])
+    (if (> n 0)
+    (cons (car res) (stream-for-n-steps (cdr res) (- n 1)))
+    null)
+    )
+)
+
+(stream-for-n-steps (stream-generator + 1) 5)
+(stream-for-n-steps (stream-generator + 1) 20)
