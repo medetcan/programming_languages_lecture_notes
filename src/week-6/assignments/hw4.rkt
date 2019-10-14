@@ -50,3 +50,23 @@
 (list-nth-mod (list 1 2 3 4 5 6 7 8 9 10) 3)
 (list-nth-mod (list 1 2 3 4 5 6 7 8 9 10) 5)
 (list-nth-mod (list 1 2 3 4 5 6 7 8 9 10) 6)
+
+;4. Write a function stream-for-n-steps that takes a stream s and a number n.
+;It returns a list holding the first n values produced by s in order.
+;Assume n is non-negative.  
+;Note:You can test your streams with this function instead of the graphics code.
+
+(define (stream-for-n-steps s n) (
+    (letrec 
+      ([f (lambda (n) (
+         if (< n 0) 
+            null
+            (cons (car (s)) (f s (- n 1)))
+            ))
+        ])
+        (f n)
+        ) 
+    )
+)
+(define (my-stream) (cons 1 my-stream))
+(stream-for-n-steps my-stream 5)
