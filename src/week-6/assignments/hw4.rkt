@@ -1,4 +1,3 @@
-
 #lang racket
 
 (provide (all-defined-out)) ;; so we can put tests in a second file
@@ -57,8 +56,8 @@
 ;Note:You can test your streams with this function instead of the graphics code.
 
 (define (stream-generator fn arg) (
-    letrec ([f (lambda (n) (cons n (lambda () (f (fn n arg)))))])    
-    (lambda () (f 1))
+    letrec ([f (lambda (n) (cons n (lambda () (f (fn n)))))])    
+    (lambda () (f arg))
     )
 )
 
@@ -70,12 +69,45 @@
     )
 )
 
-(stream-for-n-steps (stream-generator + 1) 5)
-(stream-for-n-steps (stream-generator + 1) 20)
+(stream-for-n-steps (stream-generator (lambda (n) (+ n 1)) 1) 5)
+(stream-for-n-steps (stream-generator (lambda (n) (+ n 1)) 1) 20)
 
 ; 5. Write a stream funny-number-stream that is like the stream of natural numbers except numbers divisible by 5 are negated.
 ; Remember a stream is a thunk that when called produces a pair. 
 ; Here the car of the pair will be a number and the cdr will be another stream
 
 
-(streams-generator (lambda (n arg) (if() )) 1)
+(define funny-number-stream (stream-generator 
+        (
+        lambda (n) (
+            let ([abs-n (abs n)])
+            (if(= 0 (remainder (+ abs-n 1) 5)) 
+            (- (+ n 1)) 
+            (+ abs-n 1))
+                )
+            ) 
+        1
+    )
+)
+
+((cdr ((cdr ((cdr ((cdr ((cdr (funny-number-stream)))))))))))
+((cdr ((cdr ((cdr ((cdr ((cdr (funny-number-stream)))))))))))
+(stream-for-n-steps funny-number-stream 100)
+
+; 6. Write a stream dan-then-dog, 
+; where the elements of the stream alternate between the strings "dan.jpg" and "dog.jpg" (starting with"dan.jpg").  
+; More specifically, dan-then-dog should be a thunk that when called produces a pair of "dan.jpg" and a thunk that when called produces a pair of "dog.jpg" and a thunk that when called...  etc.
+
+(define dan-then-dog (stream-generator 
+        (lambda (str) (if(string=? str "dan.jpg") "dog.jpg" "dan.jpg"))
+        "dan.jpg"
+    )
+)
+
+((cdr (dan-then-dog)))
+(stream-for-n-steps dan-then-dog 20)
+
+; 7. Write a function stream-add-zero that takes a stream s and returns another stream.  
+; If s would produce v for its ith element, then (stream-add-zero s) would produce the pair (0 .v) for its ith element.
+; Hint: Use a thunk that when called uses s and recursion.
+; Note: One of the provided tests in the file using graphics uses(stream-add-zero dan-then-dog) with place-repeatedly

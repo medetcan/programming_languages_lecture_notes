@@ -13,6 +13,7 @@
 ;; the graphics code, though it is not sophisticated.
 
 (require (lib "graphics.rkt" "graphics"))
+(require "hw4.rkt")
 
 (open-graphics)
 
@@ -65,9 +66,9 @@
                ".jpg"))
 
 ; a zero-argument function: call (one-visual-test) to open the graphics window, etc.
-(define (one-visual-test)
-  (place-repeatedly (open-window) 0.5 (cycle-lists nums files) 27))
+; (define (one-visual-test)
+  ; (place-repeatedly (open-window) 0.5 (cycle-lists nums files) 27))
 
 ; similar to previous but uses only two files and one position on the grid
-(define (visual-zero-only)
-  (place-repeatedly (open-window) 0.5 (stream-add-zero dan-then-dog) 27))
+; (define (visual-zero-only)
+  ; (place-repeatedly (open-window) 0.5 (stream-add-zero dan-then-dog) 27))
