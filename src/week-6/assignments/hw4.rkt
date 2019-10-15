@@ -115,12 +115,11 @@
 
 (define (stream-add-zero s) (
     letrec ([f (lambda(s) (let ([res (s)])  (cons (cons 0 (car res)) (lambda () (f (cdr res))))))])
-     (f s)
+     (lambda () (f s))
     )
 )
 
-(stream-add-zero dan-then-dog)
-((cdr (stream-add-zero dan-then-dog)))
+(cdr ((stream-add-zero dan-then-dog)))
 
 
 ; 8. Write a function cycle-lists that takes two lists xs and ys and returns a stream.
@@ -132,4 +131,21 @@
 ; Hints: Use one of the functions you wrote earlier.
 ; Use a recursive helper function that takes a number n and calls itself with (+ n 1) inside a thunk.
 
-(define (cycle-lists xs ys) 1)
+(define (cycle-lists xs ys) ( 
+    letrec (
+         [generate-stream (lambda(fn arg) (letrec ([f (lambda (n) (cons (fn n) (lambda () (f (+ n 1)))))]) (lambda () (f arg))))]
+         [get-nth-element (lambda (xs i) (if (= i 0) (car xs) (get-nth-element (cdr xs) (- i 1))))]
+         [fx (generate-stream (lambda (n) (get-nth-element xs (remainder n (length xs)))) 0)]
+         [gx (generate-stream (lambda (n) (get-nth-element ys (remainder n (length ys)))) 0)]
+         [f (lambda(fx gx) (let ([res-fx (fx)] [res-gx (gx)])  (cons (cons (car res-fx) (car res-gx)) (lambda () (f (cdr res-fx) (cdr res-gx))))))]
+         ) 
+    (lambda () (f fx gx))
+    )
+)
+
+; (cycle-lists (list 1 3 5 7 9) (list "Medet" "Can" "Akus"))
+; ((cdr (cycle-lists (list 1 3 5 7 9) (list "Medet" "Can" "Akus"))))
+; ((cdr ((cdr (cycle-lists (list 1 3 5 7 9) (list "Medet" "Can" "Akus"))))))
+; ((cdr ((cdr ((cdr (cycle-lists (list 1 3 5 7 9) (list "Medet" "Can" "Akus"))))))))
+; ((cdr ((cdr ((cdr ((cdr (cycle-lists (list 1 3 5 7 9) (list "Medet" "Can" "Akus"))))))))))
+; ((cdr ((cdr ((cdr ((cdr ((cdr (cycle-lists (list 1 3 5 7 9) (list "Medet" "Can" "Akus"))))))))))))
