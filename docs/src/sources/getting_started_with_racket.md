@@ -79,4 +79,80 @@
 
 #### Conditionals
 
+* There are two ways to test a condition and branch accordingly. 
+    * `if and cond` are those two things.
+* `(if <test-expr> <then-expr> <else-expr>)`
+    * if is an expression result of the whole expression is a value.
+    * `<test-expr>` evaluates to `true` for `#t` and for any result different than `0`
+    * `<test-expr>` evaluates to `false` for `#f` and `0`.
+    * If `<test-expr>` is `true` then `<then-expr>` is evaluated and result of the `<then-expr>` becomes the result of the if expression.
+    * If `<test-expr>` is `false` then `<else-expr>` is evaluated and result of the `<else-expr>` becomes the result of the if expression.
+    * If expression is not eagerly evaluated.
+    ```racket
+    (if (positive? 5) (error "doesn't get here") 2)
+    (if "Hello World" "yes" "no")
+    ```
+* `(cond <cond-clause>)`
+    * `cond-clause = [<test-expr> <expr>] [<text-expr> <expr>] ...`
+    * `cond-clause = [<test-expr> <expr>] [<else> <then-expr> ...+]`
+        * A `cond-clause` that starts with `else` must be the last `cond-clause`
+        * If `<else> <then-expr> ...+` is present, then the `then-expr` are evaluated.
+        * The result of the last `<then-expr>` becomes the result of the whole clause.
+    * Each `<test-expr>` evaluated in order until one of the expression evaluates to `#t`.
+    * If none of the `<test-expr>` evaluates to `true` then result of the `cond` is `#<void>`
+        * As a fallback you should provide a `<cond-clause>` such as following `[#t <expr>]`.
+```racket
+(define (isCollection xs) (
+    cond [(list? xs) => (lambda(l) (map (lambda (x) (* x 2)) xs))]
+         [(pair? xs) "It is a pair"]
+         [else 1 2 3 4 5 6]
+    )
+  )
+```
 
+#### Local Bindings
+
+* Racket provides three forms of local bindings.
+    * `let`
+        * General syntax as follows; `(let ([id expr] ...) body ...+)`
+            * `[id expr] ...` expressions are evaluated in paralell. 
+            * The `ids` are bound in parallel, That is, no `id` is bound in the right-hand side `expr` for any id, but all are available in the body.
+                * There can never be forward references or recursive calls in `let` binding.
+                * That means any `<id>`'s expression can not see its binding or any other `<id>`'s expression.
+        * The characterization of let bindings as “parallel” is not meant to imply concurrent evaluation.
+            * The exprs are evaluated in order and the bindings are delayed until all exprs are evaluated.
+    ```racket
+    (let ([x 2]) x)
+    (let ([x 2]) x 2)
+    (let ([me "Bob"] [myself "Bobby"] [I "Bobby"]) (list me myself I))
+    (let ([+ (lambda (x y)
+             (if (string? x)
+                 (string-append x y)
+                 (+ x y)))]); Uses original + operator. 
+    (list (+ 1 2)
+          (+ "see" "saw")))
+    ```
+    * `let*`
+        * General syntax as follows; `(let* ([id expr] ...) body ...+)`
+        * The difference is that each `id` is available for use in later `expr`, as well as in the body.
+        * `ids` not needed to be distinct, most recent binding is the visible one.
+    ```racket
+    (let* ([name "Medet"] [name (string-append name " Can")] [name (string-append name " Akus")]) name)
+    ; "Medet Can Akus"
+    (let* ([x (list "Salad")] [y (cons "Shroom" x)] [z (cons "Apple" y)]) (list x y z))
+    ; (("Salad") ("Shroom" "Salad") ("Apple" "Shroom" "Salad"))
+    ```
+    * `letrec`
+        * General syntax as follows; `(letrec ([id expr] ...) body ...+)`
+        * While `let` makes its bindings available only in the bodys, and `let*` makes its bindings available to any later binding `expr`,
+        `letrec` makes its binding available to all other `expr`s even the earlier ones.
+        * In other word `letrec` bindings are recursive.
+        * `letrec` is useful for writing mutually recursive functions.
+    ```racket
+    (letrec ([fact (lambda (n) (if (= n 0) 1 (* n (fact (- n 1)))))]) (fact 4))
+    ```
+
+
+#### Thunk
+
+#### Stream
