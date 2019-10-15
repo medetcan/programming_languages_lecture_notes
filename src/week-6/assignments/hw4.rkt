@@ -72,3 +72,10 @@
 
 (stream-for-n-steps (stream-generator + 1) 5)
 (stream-for-n-steps (stream-generator + 1) 20)
+
+; 5. Write a stream funny-number-stream that is like the stream of natural numbers except numbers divisible by 5 are negated.
+; Remember a stream is a thunk that when called produces a pair. 
+; Here the car of the pair will be a number and the cdr will be another stream
+
+
+(streams-generator (lambda (n arg) (if() )) 1)
