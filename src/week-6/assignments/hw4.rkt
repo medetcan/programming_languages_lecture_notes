@@ -14,10 +14,10 @@
     )
 )
 
-(sequence 1 10 1)
-(sequence 3 11 2)
-(sequence 3 8 3)
-(sequence 3 2 1)
+; (sequence 1 10 1)
+; (sequence 3 11 2)
+; (sequence 3 8 3)
+; (sequence 3 2 1)
 
 ;2. Write a function string-append-map that takes a list of strings xs and a string suffix and returns a list of strings.
 ;Each element of the output should be the corresponding element of the input appended with suffix (with  no  extra  space  between  the  element  and suffix).
@@ -28,8 +28,8 @@
     )
 )
 
-(string-append-map (list "Medet" "Can" "Akus" "Hello" "World") "Racket")
-(string-append-map (list "Hello ") "World")
+; (string-append-map (list "Medet" "Can" "Akus" "Hello" "World") "Racket")
+; (string-append-map (list "Hello ") "World")
 
 ;3. Write  a  function list-nth-mod that takes a list xs and a number n.
 ;If the number is negative, terminate the computation with (error "list-nth-mod: negative number").
@@ -40,15 +40,16 @@
 (define (list-nth-mod xs n) (
     cond [(< n 0) (error "list-nth-mod: negative number")]
          [(= (length xs) 0) (error "list-nth-mod: empty list")]
-         [#t (car (list-tail xs (remainder (length xs) n)))]
+         [#t (car (list-tail xs (remainder n (length xs))))]
     )
 )
 
-(list-nth-mod (list 1 2 3 4 5 6 7 8 9 10) 1)
-(list-nth-mod (list 1 2 3 4 5 6 7 8 9 10) 2)
-(list-nth-mod (list 1 2 3 4 5 6 7 8 9 10) 3)
-(list-nth-mod (list 1 2 3 4 5 6 7 8 9 10) 5)
-(list-nth-mod (list 1 2 3 4 5 6 7 8 9 10) 6)
+; (list-nth-mod (list 0 1 2 3 4) 2)
+; (list-nth-mod (list 1 2 3 4 5 6 7 8 9 10) 1)
+; (list-nth-mod (list 1 2 3 4 5 6 7 8 9 10) 2)
+; (list-nth-mod (list 1 2 3 4 5 6 7 8 9 10) 3)
+; (list-nth-mod (list 1 2 3 4 5 6 7 8 9 10) 5)
+; (list-nth-mod (list 1 2 3 4 5 6 7 8 9 10) 6)
 
 ;4. Write a function stream-for-n-steps that takes a stream s and a number n.
 ;It returns a list holding the first n values produced by s in order.
@@ -69,8 +70,8 @@
     )
 )
 
-(stream-for-n-steps (stream-generator (lambda (n) (+ n 1)) 1) 5)
-(stream-for-n-steps (stream-generator (lambda (n) (+ n 1)) 1) 20)
+; (stream-for-n-steps (stream-generator (lambda (n) (+ n 1)) 1) 5)
+; (stream-for-n-steps (stream-generator (lambda (n) (+ n 1)) 1) 20)
 
 ; 5. Write a stream funny-number-stream that is like the stream of natural numbers except numbers divisible by 5 are negated.
 ; Remember a stream is a thunk that when called produces a pair. 
@@ -90,9 +91,9 @@
     )
 )
 
-((cdr ((cdr ((cdr ((cdr ((cdr (funny-number-stream)))))))))))
-((cdr ((cdr ((cdr ((cdr ((cdr (funny-number-stream)))))))))))
-(stream-for-n-steps funny-number-stream 100)
+; ((cdr ((cdr ((cdr ((cdr ((cdr (funny-number-stream)))))))))))
+; ((cdr ((cdr ((cdr ((cdr ((cdr (funny-number-stream)))))))))))
+; (stream-for-n-steps funny-number-stream 100)
 
 ; 6. Write a stream dan-then-dog, 
 ; where the elements of the stream alternate between the strings "dan.jpg" and "dog.jpg" (starting with"dan.jpg").  
@@ -104,8 +105,8 @@
     )
 )
 
-((cdr (dan-then-dog)))
-(stream-for-n-steps dan-then-dog 20)
+; ((cdr (dan-then-dog)))
+; (stream-for-n-steps dan-then-dog 20)
 
 ; 7. Write a function stream-add-zero that takes a stream s and returns another stream.  
 ; If s would produce v for its ith element, then (stream-add-zero s) would produce the pair (0 .v) for its ith element.
@@ -119,7 +120,7 @@
     )
 )
 
-(cdr ((stream-add-zero dan-then-dog)))
+; (cdr ((stream-add-zero dan-then-dog)))
 
 
 ; 8. Write a function cycle-lists that takes two lists xs and ys and returns a stream.
@@ -149,3 +150,56 @@
 ; ((cdr ((cdr ((cdr (cycle-lists (list 1 3 5 7 9) (list "Medet" "Can" "Akus"))))))))
 ; ((cdr ((cdr ((cdr ((cdr (cycle-lists (list 1 3 5 7 9) (list "Medet" "Can" "Akus"))))))))))
 ; ((cdr ((cdr ((cdr ((cdr ((cdr (cycle-lists (list 1 3 5 7 9) (list "Medet" "Can" "Akus"))))))))))))
+
+; 9. Write a function vector-assoc that takes a value v and a vector vec.
+; It should behave like Racket’s assoc library function except;
+;   * It processes a vector (Racket’s name for an array) instead of a list.
+;   * It allows vector elements not to be pairs in which case it skips them
+;   * It always takes exactly two arguments.  
+; Process the vector elements in order starting from 0.  
+; You must use library functions vector-length, vector-ref, and equal?. 
+; Return #f if no vector element is a pair with a car field equal to v, else return the first pair with an equal car field.
+; Sample solution is 9 lines, using one local recursive helper function.
+
+(define (vector-assoc v vec) 
+    (letrec (
+          [len (vector-length vec)] 
+          [f (lambda(pos) ( if (= pos len) #f (let ([v-ref (vector-ref vec pos)]) (if (and (pair? v-ref) (equal? v (car v-ref))) v-ref (f (+ pos 1))) )))]
+          )
+      (f 0)
+    )
+)
+
+; (vector-assoc 4 (vector (cons 2 1) (cons 3 1) (cons 4 1) (cons 5 1)))
+
+; 10. Write a function cached-assoc that takes a list xs and a number n and returns a function that takes one argument v and returns the same thing that(assoc v xs)would return.
+; However, you should use an n-element cache of recent results to possibly make this function faster than just calling assoc (if xs is long and a few elements are returned often). 
+; The cache must be a Racket vector of length n that is created by the call to cached-assoc (use Racket library function vector or make-vector) and 
+; used-and-possibly-mutated each time the function returned by cached-assoc is called.
+; Assume n is positive.
+; The cache starts empty (all elements #f).
+; When the function returned by cached-assoc is called, it first checks the cache for the answer.
+; If it is not there, it uses assoc and xs to get the answer and if the result is not #f,
+; it adds the pair to the cache before returning (using vector-set!).
+; The cache slots are used in a round-robin fashion: the first time a pair is added to the cache it is put in position 0, the next pair is put in position 1, etc.  
+; up to positionn − 1 and then back to position 0 (replacing the pair already there), then position 1, etc
+; Hints:
+; * In addition to a variable for holding the vector whose contents you mutate with vector-set!,use a second variable to keep track of which cache slot will be replaced next. 
+;   After modifying the cache, increment this variable (with set!) or set it back to 0.
+; * To test your cache, it can be useful to add print expressions so you know when you are using the cache and when you are not.
+;   But remove these print expressions before submitting your code.•Sample solution is 15 lines.
+
+(define (cached-assoc xs n) null)
+
+
+; 11. Define a macro that is used like (while-less e1 do e2) where e1 and e2 are expressions and while-less and do are syntax (keywords).
+; The macro should do the following:
+;   * It evaluates e1 exactly once.
+;   * It evaluates e2 at least once.
+;   * It keeps evaluating e2 until and only until the result is not a number less than the result of the evaluation of e1.
+;   * Assuming evaluation terminates, the result is #t.
+;   * Assume e1 and e2 produce numbers; your macro can do anything or fail mysteriously otherwise.
+;   Hint:  Define and use a recursive thunk.  Sample solution is 9 lines.
+; (define a 2)
+; (while-less 7 do (begin (set! a (+ a 1)) (print "x") a)) 
+; (while-less 7 do (begin (set! a (+ a 1)) (print "x") a))
