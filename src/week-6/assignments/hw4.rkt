@@ -164,8 +164,7 @@
 (define (vector-assoc v vec) 
     (letrec (
           [len (vector-length vec)] 
-          [f (lambda(pos) ( if (= pos len) #f (let ([v-ref (vector-ref vec pos)]) (if (and (pair? v-ref) (equal? v (car v-ref))) v-ref (f (+ pos 1))) )))]
-          )
+          [f (lambda(pos) ( if (= pos len) #f (let ([v-ref (vector-ref vec pos)]) (if (and (pair? v-ref) (equal? v (car v-ref))) v-ref (f (+ pos 1))) )))])
       (f 0)
     )
 )
@@ -189,8 +188,27 @@
 ; * To test your cache, it can be useful to add print expressions so you know when you are using the cache and when you are not.
 ;   But remove these print expressions before submitting your code.•Sample solution is 15 lines.
 
-(define (cached-assoc xs n) null)
+(define (cached-assoc xs n) (
+    letrec (
+         [cache-vec (make-vector n (cons #f #f))]
+         [cache-len (vector-length cache-vec)] 
+         [cache-pos 0]
+         [find (lambda(pos v) ( if (= pos cache-len) #f (let ([v-ref (vector-ref cache-vec pos)]) (if (equal? v (car v-ref)) v-ref (find (+ pos 1) v)) )))]
+         [push (lambda(pos v) (vector-set! cache-vec pos v) (update-pos))]
+         [update-pos (lambda() (set! cache-pos (remainder (+ cache-pos 1) cache-len)))])
+    (lambda(v) (
+             cond [(find 0 v) => (lambda (v) v)]
+                  [(assoc v xs) => (lambda(v) (push cache-pos v) v)]
+                  [else #f]
+            )
+        )
+    )
+)
 
+; (define my-assoc (cached-assoc (list (list 1 2) (list 3 4) (list 5 6) (list 7 8) (list 9 10) (list 11 12)) 10))
+; (my-assoc 11)
+; (my-assoc 1)
+; (my-assoc 3)
 
 ; 11. Define a macro that is used like (while-less e1 do e2) where e1 and e2 are expressions and while-less and do are syntax (keywords).
 ; The macro should do the following:
@@ -200,6 +218,17 @@
 ;   * Assuming evaluation terminates, the result is #t.
 ;   * Assume e1 and e2 produce numbers; your macro can do anything or fail mysteriously otherwise.
 ;   Hint:  Define and use a recursive thunk.  Sample solution is 9 lines.
-; (define a 2)
+
+(define-syntax while-less (
+    syntax-rules (do)
+    [(while-less e1 do e2) (
+            letrec ([x e1] [f (lambda() (if (< e2 x) (f) #t))])
+            (f)
+            )
+        ]
+    )
+)
+
+; (define a 1)
 ; (while-less 7 do (begin (set! a (+ a 1)) (print "x") a)) 
 ; (while-less 7 do (begin (set! a (+ a 1)) (print "x") a))
