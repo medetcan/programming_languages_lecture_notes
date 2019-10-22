@@ -43,6 +43,12 @@
 ((pow 2) 4)
 ```
 
+* While racket encourages a functional programming style, The truth is racket has assignment statement.
+    * You can change the value of a binding using;
+        * `set! <binding-name> <expr>`
+* Mutating top level bindings not recommended because it is very hard to determine and track which code uses that top level binding.
+* A top-level binding is not mutable unless the module that defined it contains a set! for it.
+
 #### List
 
 * `list` function takes a variable number of arguments and returns a list containing the values. 
@@ -155,4 +161,26 @@
 
 #### Thunk
 
+* Most of the languages eagerly evaluates its arguments to a function.
+    * Sometimes this is not the intended behavior.
+    * To delay the evaluation of some expression you can wrap the expression with a zero argument lambda function.
+* When we use a zero argument function to delay evaluation we call the function a thunk.
+* Thunks are primarily used to delay a calculation until its result is needed, or to insert operations at the beginning or end of the other subroutine.
+* By using thunks we can achieve lazy evaluation.
+    * If a code is lazily evaluated we can calculate its result when needed.
+        * We can avoid repeatedly calculating the result of a function.
+        * We can save the result of the computation and use the result instead of calling computation again and again to get the same result.
+```racket
+(define (my-delay f) (mcons #f f))
+(define (my-force th) ( ;Force evaluation of the the function if result is already calculated return result.
+    if (mcar th)
+       (mcdr th)
+       (begin (set-mcar! th #t) (set-mcdr! th ((mcdr th))) (mcdr th))
+    )
+)
+```
+
 #### Stream
+
+* A stream is an infinite sequences of values.
+* We obviously can't create a such sequence explicitly but we can create code that knows how to produce the infinite sequence and other code that knows how to ask for however much of the sequence it needs.
