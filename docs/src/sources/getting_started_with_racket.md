@@ -182,5 +182,42 @@
 
 #### Stream
 
-* A stream is an infinite sequences of values.
-* We obviously can't create a such sequence explicitly but we can create code that knows how to produce the infinite sequence and other code that knows how to ask for however much of the sequence it needs.
+* A stream is an infinite sequences of values that are produced over time.
+* We can't create a such sequence explicitly.
+    * We can create code that knows how to produce the infinite sequence and other code that knows how to ask for however much of the sequence it needs.
+* There are many areas that streams are used such as;
+    * Web browsers (Button click, scrolling)
+    * Messaging (Kafka)
+```racket
+; Examples of a simple stream that continuously produces 1.
+(define ones (lambda () (cons 1 ones)))
+; Examples of a simple streams that produces natural numbers starting from 1.
+(define nats(letrec ([f (lambda (x) (cons x (lambda () (f (+ x 1)))))])(lambda () (f 1))))
+```
+
+#### Memoization
+
+* We can avoid long running computations to get the result of any given input by using memoization.
+    * Function should not have side effects.
+    * Given the same input function should produce the same output.
+
+* To implement memoization we do use mutation.
+    * Whenever the function is called with an argument we have not seen before, we compute the answer and then add the result to the table.
+    * When function called, if table contains a result for given argument no further computation is no longer necessary result of the table lookup becomes result of the whole function.
+```racket
+(define fibonacci
+  (letrec([memo null] ; list of pairs (arg . result) 
+          [f (lambda (x)
+               (let ([ans (assoc x memo)])
+                 (if ans 
+                     (cdr ans)
+                     (let ([new-ans (if (or (= x 1) (= x 2))
+                                        1
+                                        (+ (f (- x 1))
+                                           (f (- x 2))))])
+                       (begin 
+                         (set! memo (cons (cons x new-ans) memo))
+                         new-ans)))))])
+    f))
+
+```
