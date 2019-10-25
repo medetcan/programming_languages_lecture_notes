@@ -16,30 +16,28 @@
 (struct snd  (e)    #:transparent) ;; get second part of a pair
 (struct aunit ()    #:transparent) ;; unit value -- good for ending a list
 (struct isaunit (e) #:transparent) ;; evaluate to 1 if e is unit else 0
-
-;; a closure is not in "source" programs but /is/ a MUPL value; it is what functions evaluate to
-(struct closure (env fun) #:transparent) 
+(struct closure (env fun) #:transparent) ;; a closure is not in "source" programs but /is/ a MUPL value; it is what functions evaluate to
 
 ;; Problem 1
+(define (racketlist->mupllist lst) (foldr apair (aunit) lst))
 
-;; CHANGE (put your solutions here)
-
+(define (mupllist->racketlist mupl-list) (
+    if (aunit? mupl-list) '() (cons (apair-e1 mupl-list) (mupllist->racketlist (apair-e2 mupl-list)))
+   )
+)
 ;; Problem 2
-
 ;; lookup a variable in an environment
-;; Do NOT change this function
-(define (envlookup env str)
+(define (envlookup env str) ;; Do NOT change this function 
   (cond [(null? env) (error "unbound variable during evaluation" str)]
         [(equal? (car (car env)) str) (cdr (car env))]
         [#t (envlookup (cdr env) str)]))
 
-;; Do NOT change the two cases given to you.  
-;; DO add more cases for other kinds of MUPL expressions.
-;; We will test eval-under-env by calling it directly even though
-;; "in real life" it would be a helper function of eval-exp.
+;; Do NOT change the two cases given to you. Do add more cases for other kinds of MUPL expressions.
+;; We will test eval-under-env by calling it directly even though "in real life" it would be a helper function of eval-exp.
 (define (eval-under-env e env)
-  (cond [(var? e) 
-         (envlookup env (var-string e))]
+  (cond 
+        [(var? e) (envlookup env (var-string e))]
+        [(int? e) e]
         [(add? e) 
          (let ([v1 (eval-under-env (add-e1 e) env)]
                [v2 (eval-under-env (add-e2 e) env)])
@@ -47,13 +45,26 @@
                     (int? v2))
                (int (+ (int-num v1) 
                        (int-num v2)))
-               (error "MUPL addition applied to non-number")))]
-        ;; CHANGE add more cases here
+               (error "MUPL addition applied to non-number")))
+            ]
+        [(ifgreater? e) (
+                let ([v1 (eval-under-env (ifgreater-e1 e) env)] 
+                     [v2 (eval-under-env (ifgreater-e2 e) env)])
+                (cond [(not (and (int? v1) (int? v2))) (error "MUPL ifgreater applied to non-number")]
+                      [(> (int-num v1) (int-num v2)) (eval-under-env (ifgreater-e3 e) env)]
+                      [else (eval-under-env (ifgreater-e4 e) env)])
+                )
+            ]
         [#t (error (format "bad MUPL expression: ~v" e))]))
 
 ;; Do NOT change
 (define (eval-exp e)
   (eval-under-env e null))
+
+(eval-exp (int 17))
+(eval-exp (add (int 17) (int 22)))
+(eval-exp (ifgreater (int 17) (int 15) (add (int 5) (int 10)) (int 20) ))
+(eval-exp (ifgreater (int 17) (int 1) (add (int 5) (int 10)) (int 20) ))
         
 ;; Problem 3
 
