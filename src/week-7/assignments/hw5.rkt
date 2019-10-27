@@ -55,8 +55,23 @@
                       [else (eval-under-env (ifgreater-e4 e) env)])
                 )
             ]
+        [(mlet? e) (eval-under-env (mlet-body e) (cons (cons (mlet-var e) (eval-under-env (mlet-e e) env)) env))]
+        [(closure? e) (
+                let ([enhncd-env (closure-env e)])
+                )
+            ]
+        [(fun? e) null]
+        [(call? e) null]
         [#t (error (format "bad MUPL expression: ~v" e))]))
 
+
+; (struct mlet (var e body) #:transparent) ;; a local binding (let var = e in body) 
+; (struct fun  (nameopt formal body) #:transparent) ;; a recursive(?) 1-argument function
+; (fun #f "x" (add (var "x") (int 7)))
+; (struct closure (env fun) #:transparent) ;; a closure is not in "source" programs but /is/ a MUPL value; it is what functions evaluate to
+; (closure '() (fun #f "x" (add (var "x") (int 7))))
+; (call (closure '() (fun #f "x" (add (var "x") (int 7)))) (int 1))
+; (struct call (funexp actual) #:transparent) ;; function call
 ;; Do NOT change
 (define (eval-exp e)
   (eval-under-env e null))
@@ -65,6 +80,7 @@
 (eval-exp (add (int 17) (int 22)))
 (eval-exp (ifgreater (int 17) (int 15) (add (int 5) (int 10)) (int 20) ))
 (eval-exp (ifgreater (int 17) (int 1) (add (int 5) (int 10)) (int 20) ))
+(eval-exp (mlet "x" (int 1) (add (int 5) (var "x"))))
         
 ;; Problem 3
 
