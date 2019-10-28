@@ -56,12 +56,21 @@
                 )
             ]
         [(mlet? e) (eval-under-env (mlet-body e) (cons (cons (mlet-var e) (eval-under-env (mlet-e e) env)) env))]
-        [(closure? e) (
-                let ([enhncd-env (closure-env e)])
+        [(closure? e) (closure (cons (closure-env e) env) (closure-fun e))]
+        [(fun? e) (closure env e)]
+        [(call? e) (
+                letrec (
+                        [funexp-value (call-funexp e)] 
+                        [actual-value (call-actual e)]
+                        [env-value (closure-env funexp-value)]
+                        [fun-value (closure-fun funexp-value)]
+                        [formal-value (fun-formal fun-value)]
+                        [nameopt-value (fun-nameopt fun-value)]
+                        [body-value (fun-body fun-value)]
+                    )
+                 (eval-under-env body-value (cons (cons formal-value actual-value) env-value))
                 )
             ]
-        [(fun? e) null]
-        [(call? e) null]
         [#t (error (format "bad MUPL expression: ~v" e))]))
 
 
@@ -69,18 +78,18 @@
 ; (struct fun  (nameopt formal body) #:transparent) ;; a recursive(?) 1-argument function
 ; (fun #f "x" (add (var "x") (int 7)))
 ; (struct closure (env fun) #:transparent) ;; a closure is not in "source" programs but /is/ a MUPL value; it is what functions evaluate to
-; (closure '() (fun #f "x" (add (var "x") (int 7))))
-; (call (closure '() (fun #f "x" (add (var "x") (int 7)))) (int 1))
 ; (struct call (funexp actual) #:transparent) ;; function call
 ;; Do NOT change
 (define (eval-exp e)
   (eval-under-env e null))
 
-(eval-exp (int 17))
-(eval-exp (add (int 17) (int 22)))
-(eval-exp (ifgreater (int 17) (int 15) (add (int 5) (int 10)) (int 20) ))
-(eval-exp (ifgreater (int 17) (int 1) (add (int 5) (int 10)) (int 20) ))
-(eval-exp (mlet "x" (int 1) (add (int 5) (var "x"))))
+; (eval-exp (closure (cons "b" 12) (fun #f "x" (add (var "x") (var "b"))) ) )
+(eval-exp (call (closure '() (fun #f "x" (add (var "x") (int 7)))) (int 1)))
+; (eval-exp (int 17))
+; (eval-exp (add (int 17) (int 22)))
+; (eval-exp (ifgreater (int 17) (int 15) (add (int 5) (int 10)) (int 20) ))
+; (eval-exp (ifgreater (int 17) (int 1) (add (int 5) (int 10)) (int 20) ))
+; (eval-exp (mlet "x" (int 1) (add (int 5) (var "x"))))
         
 ;; Problem 3
 
