@@ -30,13 +30,13 @@
    (check-equal? (eval-exp (call (closure '() (fun #f "x" (add (var "x") (int 7)))) (int 1))) (int 8) "call test")
    
    ;;snd test
-   ; (check-equal? (eval-exp (snd (apair (int 1) (int 2)))) (int 2) "snd test")
+   (check-equal? (eval-exp (snd (apair (int 1) (int 2)))) (int 2) "snd test")
    
    ;; isaunit test
-   ; (check-equal? (eval-exp (isaunit (closure '() (fun #f "x" (aunit))))) (int 0) "isaunit test")
+   (check-equal? (eval-exp (isaunit (closure '() (fun #f "x" (aunit))))) (int 0) "isaunit test")
    
    ;; ifaunit test
-   ; (check-equal? (eval-exp (ifaunit (int 1) (int 2) (int 3))) (int 3) "ifaunit test")
+   (check-equal? (eval-exp (ifaunit (int 1) (int 2) (int 3))) (int 3) "ifaunit test")
    
    ;; mlet* test
    ; (check-equal? (eval-exp (mlet* (list (cons "x" (int 10))) (var "x"))) (int 10) "mlet* test")

@@ -71,6 +71,9 @@
                  (eval-under-env body-value (cons (cons formal-value actual-value) env-value))
                 )
             ]
+        [(apair? e) (apair (eval-under-env (apair-e1 e)) (eval-under-env (apair-e2 e)))]
+        [(snd? e) (apair-e2 (snd-e e))]
+        [(isaunit? e) (if (aunit? (eval-under-env (isaunit-e e) env)) (int 1) (int 0))]
         [#t (error (format "bad MUPL expression: ~v" e))]))
 
 
@@ -84,7 +87,7 @@
   (eval-under-env e null))
 
 ; (eval-exp (closure (cons "b" 12) (fun #f "x" (add (var "x") (var "b"))) ) )
-(eval-exp (call (closure '() (fun #f "x" (add (var "x") (int 7)))) (int 1)))
+; (eval-exp (call (closure '() (fun #f "x" (add (var "x") (int 7)))) (int 1)))
 ; (eval-exp (int 17))
 ; (eval-exp (add (int 17) (int 22)))
 ; (eval-exp (ifgreater (int 17) (int 15) (add (int 5) (int 10)) (int 20) ))
@@ -93,7 +96,10 @@
         
 ;; Problem 3
 
-(define (ifaunit e1 e2 e3) "CHANGE")
+(define (ifaunit e1 e2 e3) (
+    if (int-num (eval-exp (isaunit (eval-exp e1)))) (eval-exp e2) (eval-exp e3)
+    )
+)
 
 (define (mlet* lstlst e2) "CHANGE")
 
