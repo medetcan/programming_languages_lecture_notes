@@ -97,11 +97,14 @@
 ;; Problem 3
 
 (define (ifaunit e1 e2 e3) (
-    if (int-num (eval-exp (isaunit (eval-exp e1)))) (eval-exp e2) (eval-exp e3)
+    if (eq? (int-num (eval-exp (isaunit (eval-exp e1)))) 1) e2 e3
     )
 )
 
-(define (mlet* lstlst e2) "CHANGE")
+(define (mlet* lstlst e2) (
+    
+    )
+)
 
 (define (ifeq e1 e2 e3 e4) "CHANGE")
 
