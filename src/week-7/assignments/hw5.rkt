@@ -72,6 +72,7 @@
                 )
             ]
         [(apair? e) (apair (eval-under-env (apair-e1 e)) (eval-under-env (apair-e2 e)))]
+        [(fst? e) (apair-e1 (fst-e e))]
         [(snd? e) (apair-e2 (snd-e e))]
         [(isaunit? e) (if (aunit? (eval-under-env (isaunit-e e) env)) (int 1) (int 0))]
         [#t (error (format "bad MUPL expression: ~v" e))]))
