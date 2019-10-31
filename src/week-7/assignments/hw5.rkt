@@ -101,17 +101,31 @@
     if (eq? (int-num (eval-exp (isaunit (eval-exp e1)))) 1) e2 e3
     )
 )
+; (define my-env null)
+    ; let ( [var-string (car (car lstlst))] [var-value (cdr (car lstlst))])
+    ; (cons (cons var-string (eval-under-env var-value my-env)) my-env )
+    ; )
 
 (define (mlet* lstlst e2) (
-    
+    letrec (
+         [compute-env (lambda(lst env) (if(null? lst) env (compute-env (cdr lst) (cons (cons (car (car lst)) (eval-under-env (cdr (car lst)) env)) env))))]
+         [env (compute-env lstlst null)]
+         )
+    (eval-under-env e2 env)
     )
 )
 
-(define (ifeq e1 e2 e3 e4) "CHANGE")
+(define (ifeq e1 e2 e3 e4) (
+    mlet* (list (cons "_x" e1) (cons "_y" e2)) (ifgreater (var "_y") (var "_x") e4 (ifgreater (var "_x") (var "_y") e4 e3))
+    )
+)
 
 ;; Problem 4
 
-(define mupl-map "CHANGE")
+(define mupl-map (
+    null
+    )
+)
 
 (define mupl-mapAddN 
   (mlet "map" mupl-map
