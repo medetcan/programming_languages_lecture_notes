@@ -78,22 +78,10 @@
         [#t (error (format "bad MUPL expression: ~v" e))]))
 
 
-; (struct mlet (var e body) #:transparent) ;; a local binding (let var = e in body) 
-; (struct fun  (nameopt formal body) #:transparent) ;; a recursive(?) 1-argument function
-; (fun #f "x" (add (var "x") (int 7)))
-; (struct closure (env fun) #:transparent) ;; a closure is not in "source" programs but /is/ a MUPL value; it is what functions evaluate to
-; (struct call (funexp actual) #:transparent) ;; function call
 ;; Do NOT change
 (define (eval-exp e)
   (eval-under-env e null))
 
-; (eval-exp (closure (cons "b" 12) (fun #f "x" (add (var "x") (var "b"))) ) )
-; (eval-exp (call (closure '() (fun #f "x" (add (var "x") (int 7)))) (int 1)))
-; (eval-exp (int 17))
-; (eval-exp (add (int 17) (int 22)))
-; (eval-exp (ifgreater (int 17) (int 15) (add (int 5) (int 10)) (int 20) ))
-; (eval-exp (ifgreater (int 17) (int 1) (add (int 5) (int 10)) (int 20) ))
-; (eval-exp (mlet "x" (int 1) (add (int 5) (var "x"))))
         
 ;; Problem 3
 
@@ -101,10 +89,7 @@
     if (eq? (int-num (eval-exp (isaunit (eval-exp e1)))) 1) e2 e3
     )
 )
-; (define my-env null)
-    ; let ( [var-string (car (car lstlst))] [var-value (cdr (car lstlst))])
-    ; (cons (cons var-string (eval-under-env var-value my-env)) my-env )
-    ; )
+
 
 (define (mlet* lstlst e2) (
     letrec (
@@ -122,10 +107,7 @@
 
 ;; Problem 4
 
-(define mupl-map (
-    null
-    )
-)
+(define mupl-map "CHANGE")
 
 (define mupl-mapAddN 
   (mlet "map" mupl-map
