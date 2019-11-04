@@ -56,25 +56,42 @@
                 )
             ]
         [(mlet? e) (eval-under-env (mlet-body e) (cons (cons (mlet-var e) (eval-under-env (mlet-e e) env)) env))]
-        [(closure? e) (closure (cons (closure-env e) env) (closure-fun e))]
+        [(closure? e) e]
         [(fun? e) (closure env e)]
         [(call? e) (
-                letrec (
-                        [funexp-value (call-funexp e)] 
-                        [actual-value (call-actual e)]
-                        [env-value (closure-env funexp-value)]
-                        [fun-value (closure-fun funexp-value)]
+                let (
+                     [closure-value (eval-under-env (call-funexp e) env)]
+                     [argument-value (eval-under-env (call-actual e) env)]
+                     )
+                (if (closure? closure-value)
+                 (letrec (
+                        [env-value (closure-env closure-value)]
+                        [fun-value (closure-fun closure-value)]
                         [formal-value (fun-formal fun-value)]
                         [nameopt-value (fun-nameopt fun-value)]
                         [body-value (fun-body fun-value)]
                     )
-                 (eval-under-env body-value (cons (cons formal-value actual-value) env-value))
+                 (if nameopt-value
+                     (eval-under-env body-value (cons (cons formal-value argument-value) (cons (cons nameopt-value closure-value) env-value)))
+                     (eval-under-env body-value (cons (cons formal-value argument-value) env-value))
+                    ))
+                 (error "MUPL call evaluates to a non closure")
+                 )
                 )
             ]
-        [(apair? e) (apair (eval-under-env (apair-e1 e)) (eval-under-env (apair-e2 e)))]
-        [(fst? e) (apair-e1 (fst-e e))]
-        [(snd? e) (apair-e2 (snd-e e))]
+        [(apair? e) (apair (eval-under-env (apair-e1 e) env) (eval-under-env (apair-e2 e) env))]
+        [(fst? e) (let ([fst-value (eval-under-env (fst-e e) env)])
+                    (cond [(apair? fst-value) (apair-e1 fst-value)]
+                         [else (error "MUPL fst evaluates to non pair")])
+                )
+            ]
+        [(snd? e) (let ([snd-value (eval-under-env (snd-e e) env)])
+                    (cond [(apair? snd-value) (apair-e2 snd-value)]
+                         [else (error "MUPL fst evaluates to non pair")])
+                )
+            ]
         [(isaunit? e) (if (aunit? (eval-under-env (isaunit-e e) env)) (int 1) (int 0))]
+        [(aunit? e) e]
         [#t (error (format "bad MUPL expression: ~v" e))]))
 
 
@@ -86,10 +103,9 @@
 ;; Problem 3
 
 (define (ifaunit e1 e2 e3) (
-    if (eq? (int-num (eval-exp (isaunit (eval-exp e1)))) 1) e2 e3
+    ifgreater (isaunit e1) (int 0) e2 e3
     )
 )
-
 
 (define (mlet* lstlst e2) (
     letrec (
@@ -105,13 +121,21 @@
     )
 )
 
-;; Problem 4
+ ;; Problem 4
 
-(define mupl-map "CHANGE")
+(define mupl-map 
+  (fun "map" "f" 
+       (fun "apply" "lst" 
+            (ifaunit (var "lst")
+                     (aunit)
+                     (apair (call (var "f") (fst (var "lst"))) 
+                            (call (var "apply") (snd (var "lst"))))))))
+                         
 
 (define mupl-mapAddN 
-  (mlet "map" mupl-map
-        "CHANGE (notice map is now in MUPL scope)"))
+  (mlet "map" mupl-map (fun "mupl-mapAddN" "n"
+                            (call (var "map") 
+                                  (fun #f "x" (add (var "x") (var "n")))))))
 
 ;; Challenge Problem
 
